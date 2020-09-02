@@ -6,35 +6,52 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("INGRESA UN NUMERO SI EL NUMERO ES EL MISMO QUE EL NUMERO SECRETO PODES ESCAPAR DE LATINOAMERICA (eliga un numero del 1 al 13)");
+            string mensaje="INGRESA UN NUMERO SI EL NUMERO ES EL MISMO QUE EL NUMERO SECRETO PODES ESCAPAR DE LATINOAMERICA (eliga un numero del 1 al 13)";
 
             Random random = new Random();
-            int secreto = random.Next(13)+1;
+            int secreto = random.Next(12)+1;
             int intentos = 0;
             int numero = 0;
 
               
             while(numero != secreto && intentos<3)
             {
-                numero = int.Parse(Console.ReadLine());
 
                 intentos++;
-
+                numero=Ingreso(mensaje);
                 if (numero != secreto) 
                 {
                     if (intentos == 3)
                     {
-                        Console.Write("PERDISTE el numero correcto era "+secreto);
+                         Perdiste(secreto);
                         break;
                     }
-                    Console.Write("ups intenta otra vez\n");
+                   mensaje="ups intenta otra vez\n";
                 }
                 else
                 {
-                    Console.Write("correcto lograste escapar de latinoamerica");
+                    Ganaste();
                     break;
                 }
             }
+
+        }
+        static int Ingreso(string text)
+        {
+            Console.WriteLine(text);
+            return int.Parse(Console.ReadLine());
+        }
+
+
+        static void Ganaste()
+        {
+            Console.WriteLine("correcto lograste escapar de latinoamerica");
+
+        }
+
+        static void Perdiste(int secret)
+        {
+            Console.WriteLine("PERDISTE el numero correcto era " + secret);
 
 
         }
