@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Parcial1
 {
@@ -6,7 +7,24 @@ namespace Parcial1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("hola");
+            Insertar();
         }
+        static void Insertar()
+        {
+            var bd = new TareasDB();
+
+
+            bd.Usuarios.Add(new Usuario
+            {
+                id = 222,
+                usuario = "lautaro",
+                clave = 1234
+
+            });
+
+            bd.SaveChanges();
+        }
+
     }
 }

@@ -6,11 +6,12 @@ namespace Parcial1
 {
     class Tarea
     {
+        public int id { get; set; }
         public string titulo { get; set; }
         public DateTime vencimiento { get; set; }
         public DateTime estimacion { get; set; }
-        public string responsable { get; set; }
-        public string estado { get; set; }
+        public Recurso responsable { get; set; }
+        public bool estado { get; set; }
 
 
     }
