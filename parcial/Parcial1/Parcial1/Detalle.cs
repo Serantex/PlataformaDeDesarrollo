@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Parcial1
 {
-    class Detalle
+   public class Detalle
     {
         public int id { get; set; }
         public DateTime fecha { get; set; }

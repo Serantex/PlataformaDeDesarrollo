@@ -15,21 +15,29 @@ namespace Parcial1
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Usuario>().ToTable("Usuario")
-                                          .Property(p => p.clave).HasMaxLength(50);
+            modelBuilder.Entity<Usuario>().ToTable("Usuario");
+            modelBuilder.Entity<Usuario>().Property(p => p.clave).HasMaxLength(50).IsRequired();
+            modelBuilder.Entity<Usuario>().Property(p => p.id).ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Recurso>().ToTable("Recurso")
-                                          .Property(n => n.nombre).HasMaxLength(50);
 
-            modelBuilder.Entity<Tarea>().ToTable("Tarea")
-                                        .Property(t=>t.estado).IsRequired();
+
+            modelBuilder.Entity<Recurso>().ToTable("Recurso");
+            modelBuilder.Entity<Recurso>().Property(n => n.nombre).HasMaxLength(50);
+            modelBuilder.Entity<Recurso>().Property(n => n.id).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Tarea>().ToTable("Tarea");
+            modelBuilder.Entity<Tarea>().Property(t => t.id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Tarea>().Property(t=>t.estado).IsRequired();
 
             modelBuilder.Entity<Detalle>().ToTable("Detalle");
-                                         
+            modelBuilder.Entity<Detalle>().Property(d => d.id).ValueGeneratedOnAdd();
 
         }
 
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Detalle> Detalles { get; set; }
+        public DbSet<Tarea> Tareas { get; set; }
+        public DbSet<Recurso> Recursos { get; set; }
 
     }
 }

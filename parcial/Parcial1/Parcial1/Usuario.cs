@@ -17,6 +17,5 @@ namespace Parcial1
 
         public int clave { get; set; }
 
-
     }
 }

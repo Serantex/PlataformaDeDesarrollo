@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Parcial1
 {
-    class Tarea
+    public class Tarea
     {
         public int id { get; set; }
         public string titulo { get; set; }
