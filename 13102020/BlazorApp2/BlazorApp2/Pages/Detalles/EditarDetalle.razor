@@ -1,0 +1,73 @@
+﻿@page "/detalles/editardetalle/{id:int}"
+@using BlazorApp2.Data
+@inject ServisDetalle ServisDetalle
+@inject NavigationManager navigation
+
+
+<EditForm Model="@Detalle" OnValidSubmit="@Guardar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    Fecha: <InputDate @bind-Value="Detalle.fecha" />
+    Tiempo: <InputDate @bind-Value="Detalle.tiempo" />
+    Recurso:
+    <InputSelect @bind-Value="Recurso">
+        <option value="0">Elegir un Recurso</option>
+        @foreach (var R in Recursos)
+        {
+            <option value="@R.id">@R.id</option>
+        }
+    </InputSelect>
+    Tarea:
+    <InputSelect @bind-Value="Tarea">
+        <option value="0">Elegir una Tarea</option>
+        @foreach (var T in Tareas)
+        {
+            <option value="@T.id">@T.id</option>
+        }
+    </InputSelect>
+
+    <button type="submit">Guardar</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public Detalle Detalle { get; set; } = new Detalle();
+
+    public string Recurso { get; set; }
+
+    public string Tarea { get; set; }
+
+    private List<Recurso> Recursos;
+
+    private List<Tarea> Tareas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id > 0)
+        {
+            Detalle = await ServisDetalle.Get(Id);
+            Recurso = Detalle.RecursoId.ToString();
+            Tarea = Detalle.TareaId.ToString();
+        }
+        else
+        {
+            Detalle = new Detalle();
+
+        }
+        Recursos = await ServisDetalle.GetRecurso();
+        Tareas = await ServisDetalle.GetTarea();
+    }
+
+
+    private async void Guardar()
+    {
+        Detalle.RecursoId = int.Parse(Recurso);
+        Detalle.TareaId = int.Parse(Tarea);
+        await ServisDetalle.Save(Detalle);
+        navigation.NavigateTo("Detalles/Detalles");
+    }
+
+}

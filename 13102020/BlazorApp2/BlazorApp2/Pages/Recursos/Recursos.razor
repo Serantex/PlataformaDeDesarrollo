@@ -1,0 +1,85 @@
+﻿@page "/recursos/Recursos"
+
+@using BlazorApp2.Data
+@inject ServisRecurso  ServisRecurso
+@inject ServisUsuario ServisUsuario
+@inject NavigationManager navigation
+@inject IJSRuntime JsRuntime
+
+
+<h1>Listado de Recursos</h1>
+
+<button class="btn btn-primary"  @onclick="()=>Editar(0)">Nuevo</button>
+
+@if (recurso == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Usuarios</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var R in recurso)
+            {
+                <tr>
+                    <td>@R.id</td>
+                    <td>@R.nombre</td>
+
+                    <td><button class="btn btn-success" @onclick="()=>Editar(R.id)">Editar</button> <button class="btn btn-danger" @onclick="()=>Borrar(R.id)">Borrar</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    private List<Recurso> recurso;
+    private List<Usuario> usuario;
+
+    public int id { get; set; }
+
+    public Usuario Modelo { get; set; } = new Usuario();
+    public Recurso Model { get; set; } = new Recurso();
+    public string RolId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        recurso = await ServisRecurso.GetAll();
+        if (id > 0)
+        {
+            Modelo = await ServisUsuario.Get(id);
+            RolId = Modelo.usuario.ToString();
+
+        }
+        else
+        {
+            Modelo = new Usuario();
+        }
+        usuario = await ServisUsuario.GetRoles();
+    }
+
+
+    protected void Editar(int id)
+    {
+        navigation.NavigateTo("/Recursos/EditarRecurso/" + id);
+    }
+
+    async Task Borrar(int id)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "¿Eliminar Recurso?");
+        if (confirmed)
+        {
+            await ServisRecurso.Remove(id);
+            recurso = await ServisRecurso.GetAll();
+        }
+    }
+}

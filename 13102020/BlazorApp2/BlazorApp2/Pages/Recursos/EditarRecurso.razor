@@ -1,0 +1,58 @@
+﻿@page "/Recursos/EditarRecurso/{id:int}"
+@using BlazorApp2.Data
+@inject ServisRecurso ServisRecurso
+@inject NavigationManager navigation
+
+
+<EditForm Model="@Recurso" OnValidSubmit="@Guardar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    Nombre: <InputText @bind-Value="Recurso.nombre" />
+    Usuario:
+    <InputSelect @bind-Value="Usuario">
+        <option value="0">Elegir un Usuario</option>
+        @foreach (var U in Usuarios)
+        {
+            <option value="@U.id">@U.id</option>
+        }
+    </InputSelect>
+
+    <button type="submit">Guardar</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public Recurso Recurso { get; set; } = new Recurso();
+
+    public string Usuario { get; set; }
+
+    private List<Usuario> Usuarios;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id > 0)
+        {
+            Recurso = await ServisRecurso.Get(Id);
+            Usuario = Recurso.UsuarioId.ToString();
+        }
+        else
+        {
+            Recurso = new Recurso();
+        }
+        Usuarios = await ServisRecurso.GetUsuarios();
+    }
+
+
+    private async void Guardar()
+    {
+        Recurso.UsuarioId = int.Parse(Usuario);
+        await ServisRecurso.Save(Recurso);
+        navigation.NavigateTo("Recursos/Recursos");
+    }
+
+
+}
