@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConsoleApp1.model;
+
 
 namespace BlazorApp2.Data
 {
@@ -19,8 +22,6 @@ namespace BlazorApp2.Data
         }
 
 
-
-
         private TareasDB context;
 
         public ServisUsuario(TareasDB _context)
@@ -35,7 +36,8 @@ namespace BlazorApp2.Data
 
         public async Task<List<Usuario>> GetAll()
         {
-            return await context.Usuarios.ToListAsync();
+            var remoteService = RestService.For<IRemotService>("http://localhost:44362/apiNet");
+            return await remoteService.GetAllUsuarios();
         }
 
         public async Task<Usuario> Save(Usuario value)
