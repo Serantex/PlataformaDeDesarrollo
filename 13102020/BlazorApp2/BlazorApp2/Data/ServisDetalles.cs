@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConsoleApp1.model;
 
 namespace BlazorApp2.Data
 {
@@ -26,49 +28,43 @@ namespace BlazorApp2.Data
             context = _context;
         }
 
-        public async Task<Detalle> Get(int id)
+        public async Task<List<Detalle>> GetAll(int Id)
         {
-            return await context.Detalle.Where(i => i.id == id).SingleAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
+            return await remoteService.GetAllDetalles(Id);
         }
 
-        public async Task<List<Detalle>> GetAll()
+        public async Task<Detalle> Get(int id)
         {
-            return await context.Detalle.ToListAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+            return await remoteService.GetDetalle(id);
         }
+
 
         public async Task<Detalle> Save(Detalle value)
         {
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
             if (value.id == 0)
             {
-                await context.Detalle.AddAsync(value);
+                await remoteService.CreateDetalle(value);
             }
             else
             {
-                context.Detalle.Update(value);
+                await remoteService.EditDetalle(value);
             }
-            await context.SaveChangesAsync();
             return value;
         }
 
-        public async Task<List<Recurso>> GetRecurso()
+        public async Task<Detalle> Remove(int id)
         {
-            return await context.Recursos.ToListAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
+            return await remoteService.DeleteDetalle(id);
         }
 
 
-        public async Task<List<Tarea>> GetTarea()
-        {
-            return await context.Tareas.ToListAsync();
-        }
-
-
-        public async Task<bool> Remove(int id)
-        {
-            var entidad = await context.Detalle.Where(i => i.id == id).SingleAsync();
-            context.Detalle.Remove(entidad);
-            await context.SaveChangesAsync();
-            return true;
-        }
 
 
     }

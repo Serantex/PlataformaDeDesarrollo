@@ -1,24 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using Refit;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConsoleApp1.model;
 
 namespace BlazorApp2.Data
 {
     public class ServisTarea
     {
-        public Tarea[] GetTareas()
-        {
-            var bd = new TareasDB();
-
-            var list = bd.Tareas.ToArray();
-
-            return list;
-        }
-
-
-
 
         private TareasDB context;
 
@@ -27,42 +18,42 @@ namespace BlazorApp2.Data
             context = _context;
         }
 
-        public async Task<Tarea> Get(int id)
-        {
-            return await context.Tareas.Where(i => i.id == id).SingleAsync();
-        }
-
         public async Task<List<Tarea>> GetAll()
         {
-            return await context.Tareas.ToListAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
+            return await remoteService.GetAllTareas();
         }
+
+        public async Task<Tarea> Get(int id)
+        {
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+            return await remoteService.GetTarea(id);
+        }
+
 
         public async Task<Tarea> Save(Tarea value)
         {
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
             if (value.id == 0)
             {
-                await context.Tareas.AddAsync(value);
+                await remoteService.CreateTarea(value);
             }
             else
             {
-                context.Tareas.Update(value);
+                await remoteService.EditTarea(value);
             }
-            await context.SaveChangesAsync();
             return value;
         }
 
-        public async Task<bool> Remove(int id)
-        {
-            var entidad = await context.Tareas.Where(i => i.id == id).SingleAsync();
-            context.Tareas.Remove(entidad);
-            await context.SaveChangesAsync();
-            return true;
-        }
-        public async Task<List<Recurso>> GetRecursos()
-        {
-            return await context.Recursos.ToListAsync();
-        }
 
+        public async Task<Tarea> Remove(int id)
+        {
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
+            return await remoteService.DeleteTarea(id);
+        }
 
     }
 }

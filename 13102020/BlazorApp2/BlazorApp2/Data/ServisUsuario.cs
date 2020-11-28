@@ -31,41 +31,39 @@ namespace BlazorApp2.Data
 
         public async Task<Usuario> Get(int id)
         {
-            return await context.Usuarios.Where(i => i.id == id).SingleAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44366/api");
+            return await remoteService.GetUsuario(id);
         }
+
 
         public async Task<List<Usuario>> GetAll()
         {
-            var remoteService = RestService.For<IRemotService>("http://localhost:44362/apiNet");
+            var remoteService = RestService.For<IRemotService>("https://localhost:44366/api");
+
             return await remoteService.GetAllUsuarios();
         }
 
         public async Task<Usuario> Save(Usuario value)
         {
+            var remoteService = RestService.For<IRemotService>("https://localhost:44366/api");
+
             if (value.id == 0)
             {
-                await context.Usuarios.AddAsync(value);
+                await remoteService.CreateUsuario(value);
             }
             else
             {
-                context.Usuarios.Update(value);
+                await remoteService.EditUsuario(value);
             }
-            await context.SaveChangesAsync();
             return value;
         }
 
-        public async Task<bool> Remove(int id)
-        {
-            var entidad = await context.Usuarios.Where(i => i.id == id).SingleAsync();
-            context.Usuarios.Remove(entidad);
-            await context.SaveChangesAsync();
-            return true;
-        }
 
-
-        public async Task<List<Usuario>> GetRoles()
+        public async Task<Usuario> Remove(int id)
         {
-            return await context.Usuarios.ToListAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44366/api");
+
+            return await remoteService.DeleteUsuario(id);
         }
     }
 }

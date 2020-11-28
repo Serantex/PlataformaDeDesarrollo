@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ConsoleApp1.model;
 using System.Threading.Tasks;
 
 namespace BlazorApp2.Data

@@ -1,7 +1,10 @@
 ﻿@page "/Tareas/EditarTarea/{id:int}"
 @using BlazorApp2.Data
+@using ConsoleApp1.model
 @inject ServisTarea ServisTarea
 @inject NavigationManager navigation
+@inject ServisRecurso ServisRecurso
+@inject IJSRuntime JsRuntime
 
 
 <EditForm Model="@Tarea" OnValidSubmit="@Guardar">
@@ -21,6 +24,7 @@
     </InputSelect>
 
     <button type="submit">Guardar</button>
+    <td><button type="button" class="btn btn-primary" @onclick="()=>VerDetalleTarea(Tarea.id)">Detalles</button></td>
 </EditForm>
 
 
@@ -45,16 +49,22 @@
         {
             Tarea = new Tarea();
         }
-        Recursos = await ServisTarea.GetRecursos();
+        Recursos = await ServisRecurso.GetAll();
     }
 
 
     private async void Guardar()
     {
-        Tarea.responsableId = int.Parse(Recurso);
+        if (int.Parse(Recurso) > -1)
+        {
+            Tarea.responsableId = int.Parse(Recurso);
+        }
         await ServisTarea.Save(Tarea);
         navigation.NavigateTo("Tareas/Tareas");
     }
 
-
+    protected void VerDetalleTarea(int id)
+    {
+        navigation.NavigateTo("/Detalles/Detalles" + id);
+    }
 }

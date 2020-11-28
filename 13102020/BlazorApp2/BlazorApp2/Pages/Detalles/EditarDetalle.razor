@@ -1,7 +1,10 @@
 ﻿@page "/detalles/editardetalle/{id:int}"
-@using BlazorApp2.Data
+@using BlazorApp2.Data;
+@using ConsoleApp1.model;
 @inject ServisDetalle ServisDetalle
 @inject NavigationManager navigation
+@inject ServisRecurso ServisRecurso
+@inject ServisTarea ServisTarea
 
 
 <EditForm Model="@Detalle" OnValidSubmit="@Guardar">
@@ -38,6 +41,8 @@
 
     public string Recurso { get; set; }
 
+    public int Tareaid { get; set; }
+
     public string Tarea { get; set; }
 
     private List<Recurso> Recursos;
@@ -46,19 +51,21 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Tarea = Tareaid.ToString();
         if (Id > 0)
         {
             Detalle = await ServisDetalle.Get(Id);
             Recurso = Detalle.RecursoId.ToString();
-            Tarea = Detalle.TareaId.ToString();
+
         }
         else
         {
             Detalle = new Detalle();
+            Detalle.TareaId = Tareaid;
 
         }
-        Recursos = await ServisDetalle.GetRecurso();
-        Tareas = await ServisDetalle.GetTarea();
+        Recursos = await ServisRecurso.GetAll();
+        Tareas = await ServisTarea.GetAll();
     }
 
 

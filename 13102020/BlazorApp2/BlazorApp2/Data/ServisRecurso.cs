@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConsoleApp1.model;
 
 namespace BlazorApp2.Data
 {
@@ -30,39 +32,47 @@ namespace BlazorApp2.Data
 
         public async Task<Recurso> Get(int id)
         {
-            return await context.Recursos.Where(i => i.id == id).SingleAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+            return await remoteService.GetRecurso(id);
         }
+
 
         public async Task<List<Recurso>> GetAll()
         {
-            return await context.Recursos.ToListAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
+            return await remoteService.GetAllRecursos();
         }
 
         public async Task<Recurso> Save(Recurso value)
         {
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
             if (value.id == 0)
             {
-                await context.Recursos.AddAsync(value);
+                await remoteService.CreateRecurso(value);
             }
             else
             {
-                context.Recursos.Update(value);
+                await remoteService.EditRecurso(value);
             }
-            await context.SaveChangesAsync();
             return value;
         }
 
-        public async Task<bool> Remove(int id)
+
+        public async Task<Recurso> Remove(int id)
         {
-            var entidad = await context.Recursos.Where(i => i.id == id).SingleAsync();
-            context.Recursos.Remove(entidad);
-            await context.SaveChangesAsync();
-            return true;
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
+            return await remoteService.DeleteRecurso(id);
         }
+
 
         public async Task<List<Usuario>> GetUsuarios()
         {
-            return await context.Usuarios.ToListAsync();
+            var remoteService = RestService.For<IRemotService>("https://localhost:44362/api");
+
+            return await remoteService.GetAllUsuarios();
         }
 
     }

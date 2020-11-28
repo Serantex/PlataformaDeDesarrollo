@@ -8,13 +8,14 @@ namespace ConsoleApp1.model
     {
 
         public Detalle() { }
-        public Detalle(int Id, DateTime Fecha, DateTime Tiempo, Recurso Recurso, Tarea Tarea)
+        public Detalle(int Id, DateTime Fecha, DateTime Tiempo, Recurso Recurso, Tarea Tarea, int IdTarea)
         {
             this.id = Id;
             this.fecha = Fecha;
             this.tiempo = Tiempo;
             this.Recurso = Recurso;
             this.Tarea = Tarea;
+            this.TareaId = IdTarea;
         }
 
         public int id { get; set; }

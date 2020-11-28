@@ -1,5 +1,6 @@
 ﻿@page "/detalles/detalles"
 @using BlazorApp2.Data
+@using ConsoleApp1.model;
 @inject ServisDetalle  ServisDetalle
 @inject NavigationManager navigation
 @inject IJSRuntime JsRuntime
@@ -43,10 +44,12 @@ else
 
 
     private List<Detalle> Detalle;
+    [Parameter]
+    public int id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Detalle = await ServisDetalle.GetAll();
+        Detalle = await ServisDetalle.GetAll(id);
     }
 
     protected void Editar(int id)
@@ -60,7 +63,7 @@ else
         if (confirmed)
         {
             await ServisDetalle.Remove(id);
-            Detalle = await ServisDetalle.GetAll();
+            Detalle = await ServisDetalle.GetAll(id);
         }
     }
 }

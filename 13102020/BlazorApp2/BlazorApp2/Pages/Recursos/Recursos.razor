@@ -1,5 +1,5 @@
 ﻿@page "/recursos/Recursos"
-
+@using ConsoleApp1.model 
 @using BlazorApp2.Data
 @inject ServisRecurso  ServisRecurso
 @inject ServisUsuario ServisUsuario
@@ -22,7 +22,6 @@ else
             <tr>
                 <th>Id</th>
                 <th>Nombre</th>
-                <th>Usuarios</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -43,28 +42,12 @@ else
 @code {
 
     private List<Recurso> recurso;
-    private List<Usuario> usuario;
 
     public int id { get; set; }
-
-    public Usuario Modelo { get; set; } = new Usuario();
-    public Recurso Model { get; set; } = new Recurso();
-    public string RolId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         recurso = await ServisRecurso.GetAll();
-        if (id > 0)
-        {
-            Modelo = await ServisUsuario.Get(id);
-            RolId = Modelo.usuario.ToString();
-
-        }
-        else
-        {
-            Modelo = new Usuario();
-        }
-        usuario = await ServisUsuario.GetRoles();
     }
 
 
